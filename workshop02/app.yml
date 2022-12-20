@@ -49,10 +49,10 @@ metadata:
     name: bggapp-svc
   namespace: bggns
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   selector: 
     name: bggapp-po
     dept: dev
   ports:
-  - port: 3000
+  - port: 80
     targetPort: 3000
