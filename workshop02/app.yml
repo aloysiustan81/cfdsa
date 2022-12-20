@@ -1,23 +1,4 @@
 ---
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: myapp-config
-  namespace: bggns
-data:
-  BGG_DB_USER: root
-  BGG_DB_HOST: bggdb-svc.bggns.svc.cluster.local
-
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: myapp-secret
-  namespace: bggns
-data:
-  BGG_DB_PASSWORD: Y2hhbmdlaXQ=
-
----
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -42,22 +23,11 @@ spec:
       - name: bggapp-container
         image: stackupiss/bgg-backend:v2
         imagePullPolicy: IfNotPresent
-        env:
-        - name: BGG_DB_USER
-          valueFrom: 
-            configMapKeyRef:
-              name: myapp-config
-              key: BGG_DB_USER
-        - name: BGG_DB_HOST
-          valueFrom: 
-            configMapKeyRef:
-              name: myapp-config
-              key: BGG_DB_HOST
-        - name: BGG_DB_PASSWORD
-          valueFrom: 
-            secretKeyRef:
-              name: myapp-secret
-              key: BGG_DB_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: myapp-config
+        - secretRef:
+            name: myapp-secret
         ports:
         - containerPort: 3000
           protocol: TCP
